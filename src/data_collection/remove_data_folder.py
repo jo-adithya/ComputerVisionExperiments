@@ -40,7 +40,7 @@ def remove_data_folder(dataset_path: Path, folders_to_keep: Dict[str, str] | Lis
             print(f"Deleting file/folder: {folder.name}...")
             shutil.rmtree(folder)
         elif isinstance(folders_to_keep, dict):
-            if folder.name in folders_to_keep.keys():
+            if folder.name in folders_to_keep.values():
                 continue
             shutil.move(folder, Path(dataset_path / folders_to_keep[folder.name]))
 
