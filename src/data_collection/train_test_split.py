@@ -19,36 +19,37 @@ from collections import defaultdict
 
 from typing import Dict, List, Optional
 
+
 def train_test_split(
-    dataset_path: Path, 
+    dataset_path: Path,
     train_path: Optional[Path],
     test_path: Optional[Path],
-    train_ratio=0.9, 
-    limit_num_images=0, 
+    train_ratio=0.9,
+    limit_num_images=0,
 ):
     """
     Splits images in a dataset into training and testing sets based on the given ratio.
 
-    This function organizes images into subdirectories for each class within the provided 
-    dataset path. The images are split into training and testing sets according to 
+    This function organizes images into subdirectories for each class within the provided
+    dataset path. The images are split into training and testing sets according to
     the specified ratio, with a limit on the maximum number of images considered per class.
 
     Parameters
     ----------
     dataset_path : Path
-        The root directory containing images organized by class folders. Each subfolder represents 
+        The root directory containing images organized by class folders. Each subfolder represents
         a class and contains images belonging to that class.
     train_path : Path, optional
-        The directory where the training images will be moved. If not provided, defaults to 
+        The directory where the training images will be moved. If not provided, defaults to
         `dataset_path / "train"`.
     test_path : Path, optional
-        The directory where the testing images will be moved. If not provided, defaults to 
+        The directory where the testing images will be moved. If not provided, defaults to
         `dataset_path / "test"`.
     train_ratio : float, optional
-        The ratio of images to be used for the training set. The value should be between 0 and 1. 
+        The ratio of images to be used for the training set. The value should be between 0 and 1.
         The default is 0.9, meaning 90% of the images will be used for training and 10% for testing.
     limit_num_images : int
-        The maximum number of images to consider per class. If there are more images than this limit, 
+        The maximum number of images to consider per class. If there are more images than this limit,
         only a random sample of this size will be used.
 
     Raises
@@ -100,3 +101,6 @@ def train_test_split(
             shutil.copy(img, train_class_path / img.name)
         for img in test_images:
             shutil.copy(img, test_class_path / img.name)
+
+
+__all__ = ["train_test_split"]
