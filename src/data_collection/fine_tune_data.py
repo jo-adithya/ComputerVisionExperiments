@@ -7,6 +7,8 @@ Functions
 fine_tune_data : fine tune a prebuilt computer vision model on the data.
 """
 
+import shutil
+from pathlib import Path
 from dataclasses import dataclass
 
 from fastai.data.all import *
@@ -22,13 +24,13 @@ class DataCleaner:
     cleaner: ImageClassifierCleaner
 
     def clean(self, dataset_path: Path):
-        for idx in cleaner.delete():
+        for idx in self.cleaner.delete():
             self.cleaner.fns[idx].unlink()
-        for idx, class_ in cleaner.change():
+        for idx, class_ in self.cleaner.change():
             shutil.move(str(self.cleaner.fns[idx]), dataset_path / class_)
 
 
-def fine_tune_data(dataset_path: Path, epoch=3, image_size=128) -> DataCleanerDict:
+def fine_tune_data(dataset_path: Path, epoch=3, image_size=128) -> DataCleaner:
     """
     Fine tune a prebuilt computer vision model from fastai on the data.
     Return a ImageClassifierCleaner, so user can choose which data to keep and which data
