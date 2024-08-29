@@ -57,7 +57,9 @@ def fine_tune_data(
             image_size, method="pad", pad_mode="zeros"
         ),  # Resize each image to 128x128
     )
-    dls = data_block.dataloaders(source=dataset_path).to(device)
+    dls = data_block.dataloaders(
+        source=dataset_path, shuffle=True, num_workers=4, pin_memory=True
+    ).to(device)
     dls.show_batch(max_n=8, figsize=(8, 5), nrows=2)
 
     learn = vision_learner(dls=dls, arch=resnet18, metrics=error_rate).to(device)
