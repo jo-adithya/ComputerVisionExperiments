@@ -30,7 +30,9 @@ class DataCleaner:
             shutil.move(str(self.cleaner.fns[idx]), dataset_path / class_)
 
 
-def fine_tune_data(dataset_path: Path, epoch=3, image_size=128) -> DataCleaner:
+def fine_tune_data(
+    dataset_path: Path, epoch=3, image_size=128, device="cpu"
+) -> DataCleaner:
     """
     Fine tune a prebuilt computer vision model from fastai on the data.
     Return a ImageClassifierCleaner, so user can choose which data to keep and which data
@@ -44,17 +46,21 @@ def fine_tune_data(dataset_path: Path, epoch=3, image_size=128) -> DataCleaner:
         Number of epochs to fine tune.
     image_size: int
         Size for the image transformation for the model.
+    device: str
+        Device to use for training. Default is "cpu".
     """
     data_block = DataBlock(
         blocks=(ImageBlock, CategoryBlock),  # Define the blocks: images and labels
         get_items=get_image_files,  # Function to get the items (file paths)
         get_y=parent_label,  # Function to get labels (from the parent folder name)
-        item_tfms=Resize(image_size),  # Resize each image to 128x128
+        item_tfms=Resize(
+            image_size, method="pad", pad_mode="zeros"
+        ),  # Resize each image to 128x128
     )
-    dls = data_block.dataloaders(source=dataset_path)
+    dls = data_block.dataloaders(source=dataset_path).to(device)
     dls.show_batch(max_n=8, figsize=(8, 5), nrows=2)
 
-    learn = vision_learner(dls=dls, arch=resnet18, metrics=error_rate)
+    learn = vision_learner(dls=dls, arch=resnet18, metrics=error_rate).to(device)
     print("Fine tuning vision learner...")
     learn.fine_tune(epoch)
 
